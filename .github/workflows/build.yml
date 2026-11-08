@@ -43,13 +43,10 @@ jobs:
       - name: Setup Android SDK
         run: yes | sdkmanager --licenses > /dev/null || true
 
-      - name: Pre-fetch Gradle Distribution
-        run: |
-          WRAPPER_DIR="$HOME/.gradle/wrapper/dists/gradle-9.4.1-bin/arn2x92ynaizyzdaamcbpbhtj"
-          mkdir -p "$WRAPPER_DIR"
-          echo "Pre-fetching Gradle 9.4.1 distribution..."
-          curl -sSL --retry 5 --retry-delay 5 "https://services.gradle.org/distributions/gradle-9.4.1-bin.zip" -o "$WRAPPER_DIR/gradle-9.4.1-bin.zip"
-          ls -lh "$WRAPPER_DIR/gradle-9.4.1-bin.zip"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.4.1"
 
       - name: Pre-fetch CloudStream Core JAR
         run: |
@@ -70,8 +67,7 @@ jobs:
       - name: Build Plugins
         run: |
           cd $GITHUB_WORKSPACE/src
-          chmod +x gradlew
-          ./gradlew make makePluginsJson
+          gradle make makePluginsJson
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds/ \; || echo "No .cs3 files found"
           cp -f build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
 
