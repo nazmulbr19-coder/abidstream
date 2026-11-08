@@ -1,0 +1,108 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/AniChan.cs3",
+    "status": 1,
+    "version": 22,
+    "name": "English 1",
+    "internalName": "AniChan",
+    "authors": [
+      "abidstreaming"
+    ],
+    "description": "Watch Anime in HD with Sub, Dub and Hardsub",
+    "fileSize": 65133,
+    "repositoryUrl": "https://github.com/nazmulbr19-coder/abidstream",
+    "tvTypes": [
+      "Anime",
+      "AnimeMovie"
+    ],
+    "iconUrl": "https://play-lh.googleusercontent.com/YxgDK6JP2h08FlpZs__vP2otL3HKp3IXfvb9jVUt0HgWy1V9xcWbIdkH8_o9Z6QQYnRVYPatjcPTcOIpeWtI",
+    "apiVersion": 1,
+    "fileHash": "sha256-d27720e8743cc5ca3e92f4c2d6f23c512a86a641e068506d2342c8d0d27f26dc"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/AniKotoAnime.cs3",
+    "status": 1,
+    "version": 27,
+    "name": "English 2",
+    "internalName": "AniKotoAnime",
+    "authors": [
+      "abidstreaming"
+    ],
+    "description": "AniKoto Anime - Watch Anime Sub & Dub in HD",
+    "fileSize": 46945,
+    "repositoryUrl": "https://github.com/nazmulbr19-coder/abidstream",
+    "tvTypes": [
+      "Anime",
+      "AnimeMovie",
+      "OVA"
+    ],
+    "iconUrl": "https://anikototv.se/AnikotoTheme/assets/images/favicon.png",
+    "apiVersion": 1,
+    "fileHash": "sha256-abf2444698f3e9abddaa92d4c4064dac2b7cf65b078b10eb2aab143493e17fba"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/AniSuge.cs3",
+    "status": 1,
+    "version": 15,
+    "name": "English 3",
+    "internalName": "AniSuge",
+    "authors": [
+      "abidstreaming"
+    ],
+    "description": "Anime from AniSuge with Sub and Dub support",
+    "fileSize": 60129,
+    "repositoryUrl": "https://github.com/nazmulbr19-coder/abidstream",
+    "tvTypes": [
+      "Anime",
+      "AnimeMovie",
+      "OVA"
+    ],
+    "iconUrl": "https://animesuge.cz/animesuge/images/logo.png",
+    "apiVersion": 1,
+    "fileHash": "sha256-88a9673e678b60de3605ae1e84176247adf2c17007830a1c126cb72f7e47d485"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/RareAnimesIndia.cs3",
+    "status": 1,
+    "version": 14,
+    "name": "Hindi",
+    "internalName": "RareAnimesIndia",
+    "authors": [
+      "abidstreaming"
+    ],
+    "description": "hindi cartoon (unstable and many dead links)",
+    "fileSize": 155895,
+    "repositoryUrl": "https://github.com/nazmulbr19-coder/abidstream",
+    "tvTypes": [
+      "Anime",
+      "Cartoon",
+      "TvSeries",
+      "Movie"
+    ],
+    "iconUrl": "https://www.rareanimes.foo/wp-content/uploads/2023/11/cropped-Rare-Animes-India.png",
+    "apiVersion": 1,
+    "fileHash": "sha256-01be4ddc19ddf4baa206ac072498c51d8dfab3d21040581e86864f7f7e0ba46e"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/Toonix.cs3",
+    "status": 1,
+    "version": 14,
+    "name": "cartoon(Hindi)",
+    "internalName": "Toonix",
+    "authors": [
+      "abidstreaming"
+    ],
+    "description": "cartoons and anime in hindi, english and japanese sub",
+    "fileSize": 74828,
+    "repositoryUrl": "https://github.com/nazmulbr19-coder/abidstream",
+    "tvTypes": [
+      "Cartoon",
+      "Anime",
+      "Movie",
+      "TvSeries"
+    ],
+    "iconUrl": "https://toonix.bond/icon.png?df3a3feb46702fd9",
+    "apiVersion": 1,
+    "fileHash": "sha256-7b987188f8aa7bfa61780481c670471850799cbf0eb9523b8759b7b4bc12b063"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "name": "abidstreaming",
+  "description": "abidstreaming CloudStream extensions repository",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/nazmulbr19-coder/abidstream/builds/plugins.json"
+  ]
+}

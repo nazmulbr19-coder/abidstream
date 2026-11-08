@@ -1,0 +1,6 @@
+{
+  "name": "raghav",
+  "description": "CloudStream 3 extensions repository imported from KSHITIJ8473/raghav",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
