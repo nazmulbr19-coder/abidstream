@@ -68,12 +68,11 @@ jobs:
           cp -f build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
           cat << 'EOF' > $GITHUB_WORKSPACE/builds/repo.json
           {
-            "name": "Raghav Extensions",
-            "description": "CloudStream 3 extensions repository",
+            "name": "abidstreaming",
+            "description": "abidstreaming CloudStream extensions repository",
             "manifestVersion": 1,
             "pluginLists": [
-              "https://raw.githubusercontent.com/${{ github.repository }}/builds/plugins.json",
-              "https://cdn.jsdelivr.net/gh/${{ github.repository }}@builds/plugins.json"
+              "https://raw.githubusercontent.com/${{ github.repository }}/builds/plugins.json"
             ]
           }
           EOF

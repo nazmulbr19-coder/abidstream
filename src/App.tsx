@@ -73,12 +73,12 @@ export default function App() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-bold text-slate-100 tracking-tight">KSHITIJ8473/raghav</h1>
+                <h1 className="font-bold text-slate-100 tracking-tight">abidstreaming</h1>
                 <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
-                  Imported
+                  CloudStream Repository
                 </span>
               </div>
-              <p className="text-xs text-slate-400">CloudStream 3 Extension Repository</p>
+              <p className="text-xs text-slate-400">Extension & Provider Repository</p>
             </div>
           </div>
 

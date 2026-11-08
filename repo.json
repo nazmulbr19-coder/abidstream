@@ -1,6 +1,6 @@
 {
-  "name": "Raghav Extensions",
-  "description": "CloudStream 3 extensions repository",
+  "name": "abidstreaming",
+  "description": "abidstreaming CloudStream extensions repository",
   "manifestVersion": 1,
   "pluginLists": [
     "https://raw.githubusercontent.com/KSHITIJ8473/raghav/builds/plugins.json"
