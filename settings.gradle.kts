@@ -5,15 +5,18 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-val disabled = listOf<String>("Reanimate", "LivXow", "AniDoorPlugin", "AnimeShrineDownloader", "PlayFyProvider")
+val enabledPlugins = listOf(
+    "AniChan",
+    "AniKotoAnime",
+    "AniSuge",
+    "AnimeWorldIndia",
+    "RareAnimesIndia",
+    "Toonix"
+)
 
-File(rootDir, ".").eachDir { dir ->
-    if (!disabled.contains(dir.name) && File(dir, "build.gradle.kts").exists()) {
-        include(dir.name)
+enabledPlugins.forEach { pluginName ->
+    if (File(rootDir, pluginName).exists()) {
+        include(pluginName)
     }
-}
-
-fun File.eachDir(block: (File) -> Unit) {
-    listFiles()?.filter { it.isDirectory }?.forEach { block(it) }
 }
   
