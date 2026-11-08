@@ -43,6 +43,15 @@ jobs:
       - name: Setup Android SDK
         run: yes | sdkmanager --licenses > /dev/null || true
 
+      - name: Pre-fetch CloudStream Core JAR
+        run: |
+          mkdir -p ~/.gradle/caches/cloudstream
+          echo "Resolving CloudStream classes.jar from GitHub API..."
+          ASSET_URL=$(python3 -c "import urllib.request, json; req=urllib.request.Request('https://api.github.com/repos/recloudstream/cloudstream/releases/tags/pre-release', headers={'User-Agent': 'curl'}); data=json.load(urllib.request.urlopen(req)); print(next(a['url'] for a in data['assets'] if a['name']=='classes.jar'))")
+          echo "Downloading classes.jar from: $ASSET_URL"
+          curl -sL -H "Accept: application/octet-stream" -H "User-Agent: curl" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$ASSET_URL" -o ~/.gradle/caches/cloudstream/cloudstream.jar
+          ls -lh ~/.gradle/caches/cloudstream/cloudstream.jar
+
       - name: Build Plugins
         run: |
           cd $GITHUB_WORKSPACE/src
