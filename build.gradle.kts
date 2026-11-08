@@ -20,6 +20,22 @@ buildscript {
 }
 
 allprojects {
+    val cloudstreamJar = rootProject.file("libs/cloudstream.jar")
+    if (cloudstreamJar.exists()) {
+        val userCache = File(gradle.gradleUserHomeDir, "caches/cloudstream")
+        val nestedCache = File(userCache, "cloudstream")
+        userCache.mkdirs()
+        nestedCache.mkdirs()
+        val target1 = File(userCache, "cloudstream.jar")
+        val target2 = File(nestedCache, "cloudstream.jar")
+        if (!target1.exists() || target1.length() != cloudstreamJar.length()) {
+            cloudstreamJar.copyTo(target1, overwrite = true)
+        }
+        if (!target2.exists() || target2.length() != cloudstreamJar.length()) {
+            cloudstreamJar.copyTo(target2, overwrite = true)
+        }
+    }
+
     repositories {
         google()
         mavenCentral()
