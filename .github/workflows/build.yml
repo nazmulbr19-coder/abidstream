@@ -66,6 +66,17 @@ jobs:
           ./gradlew make makePluginsJson
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds/ \; || echo "No .cs3 files found"
           cp -f build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
+          cat << 'EOF' > $GITHUB_WORKSPACE/builds/repo.json
+          {
+            "name": "Raghav Extensions",
+            "description": "CloudStream 3 extensions repository",
+            "manifestVersion": 1,
+            "pluginLists": [
+              "https://raw.githubusercontent.com/${{ github.repository }}/builds/plugins.json",
+              "https://cdn.jsdelivr.net/gh/${{ github.repository }}@builds/plugins.json"
+            ]
+          }
+          EOF
 
       - name: Push builds
         run: |

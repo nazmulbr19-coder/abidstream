@@ -1,0 +1,8 @@
+{
+  "name": "Raghav Extensions",
+  "description": "CloudStream 3 extensions repository",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/KSHITIJ8473/raghav/builds/plugins.json"
+  ]
+}
