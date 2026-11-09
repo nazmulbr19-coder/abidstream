@@ -1,4 +1,4 @@
-rootProject.name = "CloudstreamPlugins"
+rootProject.name = "abidstreaming"
 
 // Toolchain auto-provisioning: lets Gradle download Java 17 if not installed locally
 plugins {

@@ -6,7 +6,7 @@ dependencies {
 
 cloudstream {
     description = "cartoons and anime in hindi, english and japanese sub"
-    authors = listOf("KSHITIJ8473")
+    authors = listOf("abidstreaming")
 
     status = 1
     tvTypes = listOf("Cartoon", "Anime", "Movie", "TvSeries")

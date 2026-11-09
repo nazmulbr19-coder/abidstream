@@ -12,7 +12,7 @@ dependencies {
 
 cloudstream {
     description = "Anime World India - Hindi, Tamil, Telugu Anime & Cartoons with multi-audio"
-    authors = listOf("raghav")
+    authors = listOf("abidstreaming")
 
     status = 1
     tvTypes = listOf("Anime", "AnimeMovie", "Cartoon")

@@ -7,7 +7,7 @@ dependencies {
 cloudstream {
     language = "en"
     description = "Anime from AniSuge with Sub and Dub support"
-    authors = listOf("raghav")
+    authors = listOf("abidstreaming")
 
     status = 1
     tvTypes = listOf(

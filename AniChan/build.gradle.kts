@@ -12,7 +12,7 @@ dependencies {
 
 cloudstream {
     description = "Watch Anime in HD with Sub, Dub and Hardsub"
-    authors = listOf("raghav")
+    authors = listOf("abidstreaming")
 
     status = 1
     tvTypes = listOf("Anime", "AnimeMovie")

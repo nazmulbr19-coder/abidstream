@@ -6,7 +6,7 @@ dependencies {
 
 cloudstream {
     description = "AniKoto Anime - Watch Anime Sub & Dub in HD"
-    authors = listOf("KSHITIJ8473")
+    authors = listOf("abidstreaming")
     status = 1
     tvTypes = listOf("Anime", "AnimeMovie", "OVA")
     language = "en"
