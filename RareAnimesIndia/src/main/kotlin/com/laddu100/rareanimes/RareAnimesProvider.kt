@@ -108,7 +108,7 @@ data class GoFileContent(
 )
 
 class RareAnimesProvider : MainAPI() {
-    override var mainUrl = "https://www.rareanimes.mov"
+    override var mainUrl = "https://www.rareanimes.fans"
     override var name = "Rare Toons India"
     override var lang = "en"
     override val hasMainPage = true

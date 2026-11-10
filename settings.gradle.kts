@@ -9,7 +9,6 @@ val enabledPlugins = listOf(
     "AniChan",
     "AniKotoAnime",
     "AniSuge",
-    "AnimeWorldIndia",
     "RareAnimesIndia",
     "Toonix"
 )
