@@ -32,7 +32,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.atomic.AtomicBoolean
-import com.raghav.donation.DonationManager
 
 class AniChanProvider : MainAPI() {
 
@@ -58,7 +57,6 @@ class AniChanProvider : MainAPI() {
         page: Int,
         request: MainPageRequest
     ): HomePageResponse? {
-        DonationManager.checkAndShow()
         AniChanApi.refreshDomain()
         mainUrl = AniChanApi.url()
         val items = when (request.data) {

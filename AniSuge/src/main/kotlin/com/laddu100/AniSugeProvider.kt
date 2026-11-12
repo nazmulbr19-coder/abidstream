@@ -11,7 +11,6 @@ import java.net.URLEncoder
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import com.raghav.donation.DonationManager
 
 class AniSugeProvider : MainAPI() {
     override var mainUrl = "https://anisuge.tv"
@@ -122,7 +121,6 @@ class AniSugeProvider : MainAPI() {
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        DonationManager.checkAndShow()
         mainUrl = FirebaseDomainHelper.getDomain("anisuge") ?: mainUrl
         if (page > 1) return newHomePageResponse(request.name, emptyList())
         val html = quickGet("$mainUrl/home")

@@ -29,7 +29,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.net.URLEncoder
 import java.util.UUID
-import com.raghav.donation.DonationManager
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class RAIVariant(
@@ -151,7 +150,6 @@ class RareAnimesProvider : MainAPI() {
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        DonationManager.checkAndShow()
         mainUrl = FirebaseDomainHelper.getDomain("rareanimes") ?: mainUrl
         return try {
             val url = if (page <= 1) "$mainUrl/category/${request.data}/"
