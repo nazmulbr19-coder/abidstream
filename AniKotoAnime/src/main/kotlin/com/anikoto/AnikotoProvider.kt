@@ -10,7 +10,7 @@ import org.jsoup.nodes.Element
 import java.net.URLEncoder
 
 class AnikotoProvider : MainAPI() {
-    override var mainUrl = "https://anikototv.to"
+    override var mainUrl = "https://anikototv.se"
     override var name = "AniKoto Anime"
     override var lang = "en"
     override val hasMainPage = true

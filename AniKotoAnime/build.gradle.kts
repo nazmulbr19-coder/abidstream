@@ -1,4 +1,4 @@
-version = 22
+version = 24
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -10,5 +10,5 @@ cloudstream {
     status = 1
     tvTypes = listOf("Anime", "AnimeMovie", "OVA")
     language = "en"
-    iconUrl = "https://anikototv.to/AnikotoTheme/assets/images/favicon.png"
+    iconUrl = "https://anikototv.se/AnikotoTheme/assets/images/favicon.png"
 }
