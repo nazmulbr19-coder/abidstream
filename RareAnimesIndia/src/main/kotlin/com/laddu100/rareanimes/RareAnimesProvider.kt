@@ -108,13 +108,13 @@ data class GoFileContent(
 
 class RareAnimesProvider : MainAPI() {
     override var mainUrl = "https://www.rareanimes.fans"
-    override var name = "Rare Toons India"
+    override var name = "Hindi"
     override var lang = "en"
     override val hasMainPage = true
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(TvType.Anime, TvType.Cartoon, TvType.TvSeries, TvType.Movie)
 
-    private val SOURCE = "Rare Toons India"
+    private val SOURCE = "Hindi"
     private val EPISODE_HEADER = Regex("""^(?:Episode|EP)\s*[.\-]?\s*(\d{1,3})\b""", RegexOption.IGNORE_CASE)
     private val SEASON_MARKER = Regex("""^\s*Seasons?\s*[-\u2013:.]?\s*(\d{1,2})\s*$""", RegexOption.IGNORE_CASE)
     private val GOFILE_WT_SECRET = "12af056dacea0b"

@@ -17,11 +17,11 @@ import {
 } from 'lucide-react';
 
 const MODULES = [
-  { name: 'AniChan', type: 'Anime Streaming Provider', status: 'Active' },
-  { name: 'AniKotoAnime', type: 'Anime Sub & Dub Provider', status: 'Active' },
-  { name: 'AniSuge', type: 'Anime Sub & Dub Streaming', status: 'Active' },
-  { name: 'RareAnimesIndia', type: 'Regional Indian Anime & Cartoons', status: 'Active' },
-  { name: 'Toonix', type: 'Cartoons & Anime Provider', status: 'Active' },
+  { name: 'English 1', type: 'AniChan • Anime Streaming Provider', status: 'Active' },
+  { name: 'English 2', type: 'AniKoto Anime • Anime Sub & Dub Provider', status: 'Active' },
+  { name: 'English 3', type: 'AniSuge • Anime Sub & Dub Streaming', status: 'Active' },
+  { name: 'Hindi', type: 'Rare Toons India • Regional Indian Anime & Cartoons', status: 'Active' },
+  { name: 'cartoon(Hindi)', type: 'Toonix • Cartoons & Anime Provider', status: 'Active' },
 ];
 
 export default function App() {

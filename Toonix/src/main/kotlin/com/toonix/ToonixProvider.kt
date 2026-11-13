@@ -31,7 +31,7 @@ import java.text.Normalizer
 
 class Toonix : MainAPI() {
     override var mainUrl = ToonixApi.BASE
-    override var name = "Toonix"
+    override var name = "cartoon(Hindi)"
     override val hasMainPage = true
     override val hasDownloadSupport = true
     override val instantLinkLoading = true
@@ -549,7 +549,7 @@ class Toonix : MainAPI() {
         suspend fun emit(label: String, linkUrl: String, type: ExtractorLinkType, height: Int? = null, referer: String? = null) {
             if (!seen.add(linkUrl)) return
             callback(
-                newExtractorLink("Toonix", label, linkUrl, type) {
+                newExtractorLink(name, label, linkUrl, type) {
                     quality = qualityFromHeight(height)
                     if (referer != null) this.headers = mapOf("Referer" to referer)
                 }
