@@ -1,11 +1,10 @@
-version = 13
+version = 14
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
 }
 
 cloudstream {
-    language = "en"
     description = "Anime from AniSuge with Sub and Dub support"
     authors = listOf("abidstreaming")
 

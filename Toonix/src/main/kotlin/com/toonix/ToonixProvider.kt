@@ -36,7 +36,7 @@ class Toonix : MainAPI() {
     override val hasDownloadSupport = true
     override val instantLinkLoading = true
     override val supportedTypes = setOf(TvType.Cartoon, TvType.Anime, TvType.Movie, TvType.TvSeries)
-    override var lang = "hi"
+    override var lang = "universal"
 
     override val mainPage = mainPageOf(
         "trending" to "Trending Now",

@@ -1,4 +1,4 @@
-version = 12
+version = 13
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -10,6 +10,5 @@ cloudstream {
 
     status = 1
     tvTypes = listOf("Cartoon", "Anime", "Movie", "TvSeries")
-    language = "hi"
     iconUrl = "https://toonix.bond/icon.png?df3a3feb46702fd9"
 }

@@ -38,7 +38,7 @@ class AniChanProvider : MainAPI() {
     override var mainUrl = AniChanApi.url()
     override var name = "English 1"
     override val hasMainPage = true
-    override var lang = "en"
+    override var lang = "universal"
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie)
 

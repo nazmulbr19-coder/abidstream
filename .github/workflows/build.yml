@@ -81,6 +81,7 @@ jobs:
                   key = e.get("internalName") or e.get("name")
                   if key in names:
                       e["name"] = names[key]
+                  e.pop("language", None)
               with open(path, "w", encoding="utf-8") as f:
                   json.dump(entries, f, indent=2)
           '

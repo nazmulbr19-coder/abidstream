@@ -109,7 +109,7 @@ data class GoFileContent(
 class RareAnimesProvider : MainAPI() {
     override var mainUrl = "https://www.rareanimes.fans"
     override var name = "Hindi"
-    override var lang = "en"
+    override var lang = "universal"
     override val hasMainPage = true
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(TvType.Anime, TvType.Cartoon, TvType.TvSeries, TvType.Movie)

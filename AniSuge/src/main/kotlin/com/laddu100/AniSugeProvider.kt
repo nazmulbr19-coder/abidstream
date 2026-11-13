@@ -15,7 +15,7 @@ import kotlinx.coroutines.coroutineScope
 class AniSugeProvider : MainAPI() {
     override var mainUrl = "https://anisuge.tv"
     override var name = "English 3"
-    override var lang = "en"
+    override var lang = "universal"
     override val hasMainPage = true
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(

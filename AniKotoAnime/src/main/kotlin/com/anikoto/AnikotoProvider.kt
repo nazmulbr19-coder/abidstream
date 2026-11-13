@@ -12,7 +12,7 @@ import java.net.URLEncoder
 class AnikotoProvider : MainAPI() {
     override var mainUrl = "https://anikototv.se"
     override var name = "English 2"
-    override var lang = "en"
+    override var lang = "universal"
     override val hasMainPage = true
     override val supportedTypes = setOf(TvType.Anime, TvType.AnimeMovie, TvType.OVA)
 

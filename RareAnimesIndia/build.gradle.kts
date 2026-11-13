@@ -1,4 +1,4 @@
-version = 12
+version = 13
 
 android {
     buildFeatures {
@@ -11,7 +11,6 @@ dependencies {
 }
 
 cloudstream {
-    language = "hi"
     description = "hindi cartoon (unstable and many dead links)"
     authors = listOf("abidstreaming")
     status = 1
