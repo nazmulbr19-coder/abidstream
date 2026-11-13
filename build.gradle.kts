@@ -112,27 +112,3 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-
-tasks.matching { it.name == "makePluginsJson" }.configureEach {
-    doLast {
-        val displayNames = mapOf(
-            "AniChan" to "English 1",
-            "AniKotoAnime" to "English 2",
-            "AniSuge" to "English 3",
-            "RareAnimesIndia" to "Hindi",
-            "Toonix" to "cartoon(Hindi)"
-        )
-        val pluginsFile = rootProject.layout.buildDirectory.file("plugins.json").get().asFile
-        if (pluginsFile.exists()) {
-            @Suppress("UNCHECKED_CAST")
-            val entries = groovy.json.JsonSlurper().parse(pluginsFile) as MutableList<MutableMap<String, Any?>>
-            entries.forEach { entry ->
-                val internalName = entry["internalName"] as? String ?: entry["name"] as? String
-                displayNames[internalName]?.let { newName ->
-                    entry["name"] = newName
-                }
-            }
-            pluginsFile.writeText(groovy.json.JsonBuilder(entries).toPrettyString())
-        }
-    }
-}

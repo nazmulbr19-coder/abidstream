@@ -64,6 +64,26 @@ jobs:
           cd $GITHUB_WORKSPACE/src
           chmod +x gradlew
           ./gradlew make makePluginsJson
+          python3 -c '
+          import json, os
+          names = {
+              "AniChan": "English 1",
+              "AniKotoAnime": "English 2",
+              "AniSuge": "English 3",
+              "RareAnimesIndia": "Hindi",
+              "Toonix": "cartoon(Hindi)",
+          }
+          path = "build/plugins.json"
+          if os.path.exists(path):
+              with open(path, "r", encoding="utf-8") as f:
+                  entries = json.load(f)
+              for e in entries:
+                  key = e.get("internalName") or e.get("name")
+                  if key in names:
+                      e["name"] = names[key]
+              with open(path, "w", encoding="utf-8") as f:
+                  json.dump(entries, f, indent=2)
+          '
           find . -name "*.cs3" -exec cp {} $GITHUB_WORKSPACE/builds/ \; || echo "No .cs3 files found"
           cp -f build/plugins.json $GITHUB_WORKSPACE/builds/ || echo "No plugins.json found"
           cat << 'EOF' > $GITHUB_WORKSPACE/builds/repo.json
