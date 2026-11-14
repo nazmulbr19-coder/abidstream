@@ -27,6 +27,8 @@ object MegaPlayCipher {
     private var cachedSeeds: Pair<String, String>? = null
 
     private val keyPairRegex = Regex("[A-Za-z]\\w*=\"([^\"]{16})\",[A-Za-z]\\w*=\"([^\"]{16})\"")
+    private val trustKeyRegex = Regex(""""trustAesKey","TRUST_AES_KEY"\],"([^"]{16})"""")
+    private val trustIvRegex = Regex(""""trustAesIv","TRUST_AES_IV"\],"([^"]{16})"""")
     private val fileRegex = Regex("\"file\"\\s*:\\s*\"([^\"]+)\"")
 
     private fun fallback() = Pair(FALLBACK_KEY_SEED, FALLBACK_IV_SEED)
@@ -35,9 +37,11 @@ object MegaPlayCipher {
         cachedSeeds?.let { return listOf(it, fallback()) }
         val dynamic = try {
             val js = app.get("$baseUrl/lib/newclient.min.js", timeout = 10_000L).text
-            keyPairRegex.find(js)?.groupValues?.let { g ->
-                Pair(g[1], g[2]).also { cachedSeeds = it }
+            val trustPair = trustKeyRegex.find(js)?.groupValues?.get(1)?.let { k ->
+                trustIvRegex.find(js)?.groupValues?.get(1)?.let { iv -> Pair(k, iv) }
             }
+            (trustPair ?: keyPairRegex.find(js)?.groupValues?.let { g -> Pair(g[1], g[2]) })
+                ?.also { cachedSeeds = it }
         } catch (_: Exception) {
             null
         }

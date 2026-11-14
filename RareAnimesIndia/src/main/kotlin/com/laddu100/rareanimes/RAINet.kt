@@ -11,14 +11,14 @@ import okhttp3.RequestBody.Companion.toRequestBody
 internal const val RAI_UA =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
 
-internal const val MAIN_HOST = "www.rareanimes.mov"
+internal const val MAIN_HOST = "www.rareanimes.foo"
 internal const val STORE_HOST = "store.animetoonhindi.com"
 internal const val CODEDEW_HOST = "codedew.com"
 internal const val ARGON_HOST = "argon.razorshell.space"
 
 // argon signs every URL against the exact UA and Accept-Language that requested it
 internal const val ARGON_AL = "en-US,en;q=0.9"
-internal const val HUBCLOUD_HOST = "hubcloud.ist"
+internal const val HUBCLOUD_HOST = "hubcloud.pw"
 internal const val PIXELDRAIN_HOST = "pixeldrain.net"
 
 private val hostMutex = Mutex()
@@ -146,7 +146,7 @@ internal sealed class ResolvedTarget {
     data class Argon(val code: String) : ResolvedTarget()
     data class ArgonDownload(val code: String) : ResolvedTarget()
     data class PixelDrain(val id: String) : ResolvedTarget()
-    data class HubCloud(val id: String) : ResolvedTarget()
+    data class HubCloud(val id: String, val host: String = HUBCLOUD_HOST) : ResolvedTarget()
     data class Archive(val url: String) : ResolvedTarget()
     data class Direct(val url: String) : ResolvedTarget()
     data class StreamBeta(val id: String) : ResolvedTarget()
@@ -209,9 +209,11 @@ internal class CodedewResolver {
                 val id = Uri.parse(u).getQueryParameter("url")
                 if (id.isNullOrBlank()) null else ResolvedTarget.PixelDrain(id)
             }
-            u.contains("$HUBCLOUD_HOST/drive/") -> {
-                val id = u.substringAfter("$HUBCLOUD_HOST/drive/").substringBefore("?").substringBefore("/")
-                if (id.isBlank()) null else ResolvedTarget.HubCloud(id)
+            HUBCLOUD_DRIVE.containsMatchIn(u) -> {
+                val m = HUBCLOUD_DRIVE.find(u)
+                val host = m?.groupValues?.getOrNull(1)?.lowercase() ?: HUBCLOUD_HOST
+                val id = m?.groupValues?.getOrNull(2).orEmpty()
+                if (id.isBlank()) null else ResolvedTarget.HubCloud(id, host)
             }
             u.contains("pixeldrain.net/u/") || u.contains("pixeldrain.dev/u/") ||
                 u.contains("pixeldra.in/u/") -> {
@@ -244,12 +246,10 @@ internal class CodedewResolver {
                 val afterQ = url.substringAfter("zipcloud/", "").substringAfter("?")
                 val id = afterQ.substringBefore("&").substringBefore("/")
                 if (id.isBlank()) throw CodedewChainException("empty zipcloud id")
-                return ResolvedTarget.HubCloud(id)
+                return ResolvedTarget.HubCloud(id, HUBCLOUD_HOST)
             }
-            url.contains("$HUBCLOUD_HOST/drive/") -> return classifyUrl(url)
-                ?: ResolvedTarget.HubCloud(
-                    url.substringAfter("$HUBCLOUD_HOST/drive/").substringBefore("?").substringBefore("/")
-                )
+            HUBCLOUD_DRIVE.containsMatchIn(url) -> return classifyUrl(url)
+                ?: throw CodedewChainException("bad hubcloud url")
             url.contains("pixeldrain") && url.contains("/u/") -> return classifyUrl(url)
                 ?: throw CodedewChainException("bad pixeldrain url")
             url.contains("$STORE_HOST/archives/") -> return ResolvedTarget.Archive(url)
@@ -288,11 +288,13 @@ internal class CodedewResolver {
 
     // step buttons sometimes point at plain ad sites, those never lead anywhere
     private fun isForeignAdLink(url: String): Boolean {
-        val host = hostOf(url)
+        val host = hostOf(url).lowercase()
         if (host.isBlank()) return false
         if (host == CODEDEW_HOST) return false
+        if (host == "hubcloud" || host.startsWith("hubcloud.") || host.contains(".hubcloud.")) return false
         val knownHosts = listOf(
-            ARGON_HOST, HUBCLOUD_HOST, PIXELDRAIN_HOST, "pixeldrain.dev",
+            ARGON_HOST, HUBCLOUD_HOST, "hubcloud.ist", "hubcloud.cx", "hubcloud.one", "hubcloud.dad",
+            PIXELDRAIN_HOST, "pixeldrain.dev",
             "pixeldra.in", "gofile.io", "mediafire.com", "mega.nz", "mega.io",
             STORE_HOST
         )
@@ -301,6 +303,7 @@ internal class CodedewResolver {
 
     companion object {
         private val DATA_HREF = Regex("""data-href="([^"]+)"""")
+        private val HUBCLOUD_DRIVE = Regex("""https?://([^/]*hubcloud\.[a-z]+)/drive/([^/?#]+)""", RegexOption.IGNORE_CASE)
 
         private val instance = CodedewResolver()
 

@@ -1,4 +1,4 @@
-version = 13
+version = 14
 
 android {
     buildFeatures {
@@ -15,5 +15,5 @@ cloudstream {
     authors = listOf("abidstreaming")
     status = 1
     tvTypes = listOf("Anime", "Cartoon", "TvSeries", "Movie")
-    iconUrl = "https://www.rareanimes.mov/wp-content/uploads/2023/11/cropped-Rare-Animes-India.png"
+    iconUrl = "https://www.rareanimes.foo/wp-content/uploads/2023/11/cropped-Rare-Animes-India.png"
 }

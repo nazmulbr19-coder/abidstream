@@ -42,14 +42,20 @@ internal class RAIResolvedLink(
 )
 
 private val ALLOWED_HOSTS = listOf(
+    "rareanimes.foo",
+    "rareanimes.fans",
     "rareanimes.mov",
     "animetoonhindi.com",
     "codedew.com",
     "argon.razorshell.space",
     "groovy.monster",
+    "hubcloud.pw",
     "hubcloud.ist",
     "hubcloud.cx",
+    "hubcloud.one",
+    "hubcloud.dad",
     "gamerxyt.com",
+    "cryptonewz.online",
     "pixeldrain.net",
     "pixeldrain.dev",
     "pixeldra.in",

@@ -36,22 +36,44 @@ class AnikotoProvider : MainAPI() {
         "Referer" to referer,
     )
 
+    private var checkedFirebaseDomain = false
+
+    private suspend fun syncMainUrl() {
+        val candidate = FirebaseDomainHelper.getDomain("anikoto")?.trimEnd('/') ?: return
+        if (candidate == mainUrl.trimEnd('/')) return
+        if (checkedFirebaseDomain) return
+        checkedFirebaseDomain = true
+        try {
+            val probe = app.get("$candidate/latest-updated", headers = browserHeaders, timeout = 5000L)
+            if (probe.isSuccessful && probe.text.contains("ani items")) {
+                mainUrl = candidate
+            }
+        } catch (_: Exception) {
+            // Keep working default domain when Firebase points to a dead host
+        }
+    }
+
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        mainUrl = FirebaseDomainHelper.getDomain("anikoto") ?: mainUrl
-        val doc = app.get("${request.data}?page=$page", headers = browserHeaders).document
+        syncMainUrl()
+        val path = try {
+            java.net.URI(request.data).path?.takeIf { it.isNotBlank() } ?: "/latest-updated"
+        } catch (_: Exception) {
+            "/latest-updated"
+        }
+        val doc = app.get("$mainUrl$path?page=$page", headers = browserHeaders).document
         val items = doc.select("div.ani.items > div.item").mapNotNull { it.toSearchResult() }
         return newHomePageResponse(request.name, items)
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
-        mainUrl = FirebaseDomainHelper.getDomain("anikoto") ?: mainUrl
+        syncMainUrl()
         val encodedQuery = URLEncoder.encode(query, "UTF-8")
         val doc = app.get("$mainUrl/filter?keyword=$encodedQuery", headers = browserHeaders).document
         return doc.select("div.ani.items > div.item").mapNotNull { it.toSearchResult() }
     }
 
     override suspend fun load(url: String): LoadResponse? {
-        mainUrl = FirebaseDomainHelper.getDomain("anikoto") ?: mainUrl
+        syncMainUrl()
         val response = try {
             app.get(url, headers = browserHeaders)
         } catch (_: Exception) {
@@ -375,8 +397,9 @@ class AnikotoProvider : MainAPI() {
     }
 
     private fun Element.toSearchResult(): AnimeSearchResponse? {
-        val titleElement = selectFirst("a.name.d-title") ?: selectFirst("a[title]") ?: selectFirst("a[href*='/watch/']") ?: return null
-        val href = titleElement.attr("href").ifBlank { selectFirst("div.poster a, a")?.attr("href").orEmpty() }
+        val titleElement = selectFirst(".name.d-title") ?: selectFirst("a[title]") ?: selectFirst("a[href*='/watch/']") ?: return null
+        val href = selectFirst("a[href*='/watch/']")?.attr("href")
+            ?: titleElement.attr("href").ifBlank { selectFirst("div.poster a, a")?.attr("href").orEmpty() }
         val title = titleElement.text().trim().ifBlank { titleElement.attr("title").trim() }
         if (href.isBlank() || title.isBlank()) return null
         val poster = selectFirst("div.poster img, img")?.let { it.attr("data-src").ifBlank { it.attr("src") } }

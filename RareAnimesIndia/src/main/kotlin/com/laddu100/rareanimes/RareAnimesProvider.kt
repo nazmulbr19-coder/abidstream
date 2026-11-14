@@ -107,7 +107,7 @@ data class GoFileContent(
 )
 
 class RareAnimesProvider : MainAPI() {
-    override var mainUrl = "https://www.rareanimes.fans"
+    override var mainUrl = "https://$MAIN_HOST"
     override var name = "Hindi"
     override var lang = "universal"
     override val hasMainPage = true
@@ -130,18 +130,76 @@ class RareAnimesProvider : MainAPI() {
 
     private data class PageEntry(val title: String, val url: String, val poster: String?)
 
-    private fun parseListings(html: String): List<PageEntry> {
-        val doc = Jsoup.parse(html)
+    private fun originOf(url: String): String? {
+        return try {
+            val uri = android.net.Uri.parse(url)
+            val scheme = uri.scheme?.takeIf { it.isNotBlank() } ?: return null
+            val host = uri.host?.takeIf { it.isNotBlank() } ?: return null
+            "$scheme://$host"
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun isSameSiteLink(url: String, pageOrigin: String? = null): Boolean {
+        val host = try {
+            android.net.Uri.parse(url).host?.lowercase() ?: ""
+        } catch (_: Exception) {
+            ""
+        }
+        if (host.isBlank()) return false
+        val currentHost = try {
+            android.net.Uri.parse(mainUrl).host?.lowercase() ?: ""
+        } catch (_: Exception) {
+            ""
+        }
+        val pageHost = pageOrigin?.let {
+            try { android.net.Uri.parse(it).host?.lowercase() ?: "" } catch (_: Exception) { "" }
+        } ?: ""
+        return host == currentHost ||
+            (pageHost.isNotBlank() && host == pageHost) ||
+            host.endsWith("rareanimes.foo") ||
+            host.endsWith("rareanimes.fans") ||
+            host.endsWith("rareanimes.mov")
+    }
+
+    private suspend fun syncMainUrl() {
+        val remote = FirebaseDomainHelper.getDomain("rareanimes")?.trimEnd('/') ?: return
+        if (remote == mainUrl.trimEnd('/')) return
+        // Follow any redirect (e.g. .fans -> .foo) instead of overwriting mainUrl with a stale redirecting domain
+        try {
+            val probe = raiGet(remote)
+            val resolved = originOf(probe.url) ?: remote
+            if (!resolved.endsWith(".fans", ignoreCase = true) || resolved == mainUrl.trimEnd('/')) {
+                mainUrl = resolved
+            } else {
+                mainUrl = resolved
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun updateMainUrlFromResponse(responseUrl: String?) {
+        val origin = responseUrl?.let { originOf(it) } ?: return
+        if (origin.contains("rareanimes.", ignoreCase = true)) {
+            mainUrl = origin
+        }
+    }
+
+    private fun parseListings(html: String, baseUrl: String): List<PageEntry> {
+        val pageOrigin = originOf(baseUrl)
+        val doc = Jsoup.parse(html, baseUrl)
         return doc.select("article").mapNotNull { art ->
             val link = art.selectFirst("h2.entry-title a, .entry-title a")?.attr("abs:href")
-            if (link.isNullOrBlank() || !link.contains(mainUrl)) return@mapNotNull null
+            if (link.isNullOrBlank() || !isSameSiteLink(link, pageOrigin)) return@mapNotNull null
             val title = art.selectFirst("h2.entry-title, .entry-title")?.text()?.trim()
                 ?: return@mapNotNull null
             val poster = art.selectFirst("img")?.let { img ->
-                val src = img.attr("src").ifBlank { img.attr("data-src") }
+                val src = img.attr("data-src").ifBlank { img.attr("src") }
                 when {
                     src.startsWith("//") -> "https:$src"
                     src.startsWith("http") -> src
+                    src.startsWith("/") && pageOrigin != null -> "$pageOrigin$src"
                     else -> null
                 }
             }
@@ -150,12 +208,13 @@ class RareAnimesProvider : MainAPI() {
     }
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        mainUrl = FirebaseDomainHelper.getDomain("rareanimes") ?: mainUrl
+        syncMainUrl()
         return try {
             val url = if (page <= 1) "$mainUrl/category/${request.data}/"
             else "$mainUrl/category/${request.data}/page/$page/"
             val response = raiGet(url)
-            val entries = parseListings(response.text)
+            updateMainUrlFromResponse(response.url)
+            val entries = parseListings(response.text, response.url.ifBlank { url })
             val items = entries.map {
                 newMovieSearchResponse(it.title, it.url, TvType.Anime) {
                     this.posterUrl = it.poster
@@ -169,7 +228,7 @@ class RareAnimesProvider : MainAPI() {
 
     override suspend fun search(query: String): List<SearchResponse> {
         if (query.isBlank()) return emptyList()
-        mainUrl = FirebaseDomainHelper.getDomain("rareanimes") ?: mainUrl
+        syncMainUrl()
         return try {
             val encoded = URLEncoder.encode(query, "UTF-8")
             val results = mutableListOf<PageEntry>()
@@ -177,7 +236,8 @@ class RareAnimesProvider : MainAPI() {
                 val url = if (pageNum == 1) "$mainUrl/?s=$encoded"
                 else "$mainUrl/page/$pageNum/?s=$encoded"
                 val response = raiGet(url)
-                val entries = parseListings(response.text)
+                updateMainUrlFromResponse(response.url)
+                val entries = parseListings(response.text, response.url.ifBlank { url })
                 if (entries.isEmpty()) break
                 results.addAll(entries)
             }
@@ -594,7 +654,7 @@ class RareAnimesProvider : MainAPI() {
     private val HUB_SELF_SLUG = Regex("""\ball-(?:movies|seasons?|series|episodes?)-""")
 
     private fun isInternalPostLink(href: String): Boolean {
-        if (href.isBlank() || !href.contains(mainUrl)) return false
+        if (href.isBlank() || !isSameSiteLink(href)) return false
         if (href.contains("discord") || href.contains("?s=") || href.contains("#")) return false
         return try {
             val uri = android.net.Uri.parse(href)
@@ -1111,10 +1171,12 @@ class RareAnimesProvider : MainAPI() {
     }
 
     override suspend fun load(url: String): LoadResponse? {
-        mainUrl = FirebaseDomainHelper.getDomain("rareanimes") ?: mainUrl
+        syncMainUrl()
         return try {
             val response = raiGet(url)
-            val doc = Jsoup.parse(response.text)
+            updateMainUrlFromResponse(response.url)
+            val effectiveBase = response.url.ifBlank { url }
+            val doc = Jsoup.parse(response.text, effectiveBase)
 
             val title = doc.selectFirst("h1.entry-title, h1")?.text()?.trim() ?: return null
             val poster = doc.selectFirst("meta[property=og:image]")?.attr("content")
@@ -1584,19 +1646,24 @@ class RareAnimesProvider : MainAPI() {
 
     private suspend fun resolveHubCloud(
         id: String,
+        host: String,
         suffix: String,
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         var found = false
         try {
-            val page = raiGet("https://$HUBCLOUD_HOST/drive/$id")
-            val resolverUrl = Regex("""var\s+url\s*=\s*'([^']+)'""").find(page.text)?.groupValues?.get(1)
+            val targetHost = host.ifBlank { HUBCLOUD_HOST }
+            val driveUrl = "https://$targetHost/drive/$id"
+            val page = raiGet(driveUrl)
+            val effectiveOrigin = originOf(page.url) ?: "https://$targetHost"
+            val resolverUrl = Regex("""var\s+url\s*=\s*['"]([^'"]+)['"]""").find(page.text)?.groupValues?.get(1)
             if (resolverUrl.isNullOrBlank()) return false
-            val res = raiGet(resolverUrl, mapOf("Referer" to "https://$HUBCLOUD_HOST/"))
+            val res = raiGet(resolverUrl, mapOf("Referer" to "$effectiveOrigin/"))
             val body = res.text
+            val resDoc = Jsoup.parse(body, res.url.ifBlank { resolverUrl })
 
-            Regex("""<a[^>]*href="(https?://[^"]+)"[^>]*id="fsl"""").find(body)?.let { m ->
-                val fsl = htmlUnescape(m.groupValues[1])
+            resDoc.selectFirst("a#fsl[href], a[id=fsl][href]")?.attr("abs:href")?.let { rawFsl ->
+                val fsl = htmlUnescape(rawFsl)
                 if (fsl.startsWith("http") && !fsl.contains("hubcloud.cx/favicon")) {
                     callback(
                         newExtractorLink(
@@ -1629,20 +1696,24 @@ class RareAnimesProvider : MainAPI() {
                 }
             }
 
-            Regex("""https://pixel\.hubcloud\.ist/\?id=[^"'\s<>]+""").find(body)?.let { pixelMatch ->
+            Regex("""https?://(?:pixel|gpdl)\.hubcloud\.[a-z]+/\?id=[^"'\s<>]+""", RegexOption.IGNORE_CASE).find(body)?.let { pixelMatch ->
                 try {
-                    var hopUrl: String? = pixelMatch.value
-                    for (hop in 0 until 3) {
+                    var hopUrl: String? = htmlUnescape(pixelMatch.value)
+                    for (hop in 0 until 4) {
                         val current = hopUrl ?: break
+                        val hopOrigin = originOf(current) ?: effectiveOrigin
                         val hopResp = raiGet(current, allowRedirects = false)
                         val loc = hopResp.headers["location"]
                         if (loc.isNullOrBlank()) break
-                        val next: String = if (loc.startsWith("http")) loc
-                        else "https://pixel.hubcloud.ist$loc"
+                        val next: String = when {
+                            loc.startsWith("http") -> loc
+                            loc.startsWith("/") -> "$hopOrigin$loc"
+                            else -> "$hopOrigin/$loc"
+                        }
                         hopUrl = next
                         if (next.contains("dl.php?link=")) {
                             val direct = android.net.Uri.decode(
-                                next.substringAfter("dl.php?link=")
+                                next.substringAfter("dl.php?link=").substringBefore("&")
                             )
                             if (direct.startsWith("http")) {
                                 callback(
@@ -1753,7 +1824,7 @@ class RareAnimesProvider : MainAPI() {
             is ResolvedTarget.ArgonDownload -> resolveArgonDownload(t.code, label, callback)
             is ResolvedTarget.StreamBeta -> resolveStreamBeta(t.id, label, callback)
             is ResolvedTarget.PixelDrain -> emitPixelDrain(t.id, label, callback)
-            is ResolvedTarget.HubCloud -> resolveHubCloud(t.id, label, callback)
+            is ResolvedTarget.HubCloud -> resolveHubCloud(t.id, t.host, label, callback)
             is ResolvedTarget.GoFile -> resolveGoFile(t.code, label, callback)
             is ResolvedTarget.MediaFire -> resolveMediaFire(t.url, label, callback)
             is ResolvedTarget.Mega -> {

@@ -571,7 +571,7 @@ class Toonix : MainAPI() {
                 if (isHydrax) {
                     val quals = ToonixApi.resolveHydrax(src)
                     val probes = coroutineScope {
-                        quals.map { q -> async { ToonixApi.probeRange(q.src, "$ToonixApi.BASE/") } }.awaitAll()
+                        quals.map { q -> async { ToonixApi.probeRange(q.src, "${ToonixApi.BASE}/") } }.awaitAll()
                     }
                     quals.forEachIndexed { i, q ->
                         if (q.src.isBlank() || probes[i] !in 200..399) return@forEachIndexed
@@ -581,7 +581,7 @@ class Toonix : MainAPI() {
                             q.src,
                             ExtractorLinkType.VIDEO,
                             height,
-                            "$ToonixApi.BASE/"
+                            "${ToonixApi.BASE}/"
                         )
                     }
                     return@forEachIndexed

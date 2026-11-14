@@ -62,7 +62,7 @@ class RAISettingsFragment(private val plugin: Plugin) : BottomSheetDialogFragmen
         }
 
         root.addView(TextView(ctx).apply {
-            text = "RAGHAV REPO · RARE TOONS INDIA"
+            text = "ABIDSTREAM · HINDI"
             textSize = 10f
             setTextColor(textDim)
             typeface = Typeface.DEFAULT_BOLD
@@ -117,7 +117,7 @@ class RAISettingsFragment(private val plugin: Plugin) : BottomSheetDialogFragmen
         renderStatus()
 
         val sites = listOf(
-            "rareanimes.mov" to "https://$MAIN_HOST",
+            "rareanimes.foo" to "https://$MAIN_HOST",
             "store.animetoonhindi.com" to "https://$STORE_HOST",
             "codedew.com" to "https://$CODEDEW_HOST",
             "argon player" to "https://$ARGON_HOST"
